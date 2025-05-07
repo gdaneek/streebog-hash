@@ -1,0 +1,136 @@
+\hypertarget{streebog_8hh}{}\doxysection{include/streebog.hh File Reference}
+\label{streebog_8hh}\index{include/streebog.hh@{include/streebog.hh}}
+
+
+GOST 34.\+11-\/2018 hash functions 256 and 512 bits.  
+
+
+{\ttfamily \#include $<$cstdint$>$}\newline
+{\ttfamily \#include $<$cstddef$>$}\newline
+Include dependency graph for streebog.\+hh\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=202pt]{streebog_8hh__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=193pt]{streebog_8hh__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum class \mbox{\hyperlink{streebog_8hh_a7eabd788dcab19ca586663bf73deddf5}{MODE}} \{ {\bfseries H512}
+, {\bfseries H256}
+, {\bfseries \+\_\+\+\_\+\+COUNT\+\_\+\+\_\+}
+ \}
+\begin{DoxyCompactList}\small\item\em list of available operating modes \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{streebog_8hh_ab4fb3fb7323bbfe049c1baaa9d6a2b71}{streebog256}} (uint8\+\_\+t const $\ast$const in, const uint64\+\_\+t bytes\+\_\+n, uint8\+\_\+t $\ast$const out) noexcept
+\begin{DoxyCompactList}\small\item\em implementation of 256-\/bit hash algorithm \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{streebog_8hh_aa3f563d631001679eab3b8d32501d114}{streebog512}} (uint8\+\_\+t const $\ast$const in, const uint64\+\_\+t bytes\+\_\+n, uint8\+\_\+t $\ast$const out) noexcept
+\begin{DoxyCompactList}\small\item\em implementation of 512-\/bit hash algorithm \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{streebog_8hh_a3e72ecded83eb94381c3eff5f2f1703c}{streebog}} (uint8\+\_\+t const $\ast$const in, const uint64\+\_\+t bytes\+\_\+n, uint8\+\_\+t $\ast$const out, const \mbox{\hyperlink{streebog_8hh_a7eabd788dcab19ca586663bf73deddf5}{MODE}} mode=MODE\+::\+H256) noexcept
+\begin{DoxyCompactList}\small\item\em implementation of both 256-\/bit and 512-\/bit hash algorithms \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+GOST 34.\+11-\/2018 hash functions 256 and 512 bits. 
+
+\begin{DoxyAuthor}{Author}
+\href{https://github.com/gdaneek}{\texttt{ https\+://github.\+com/gdaneek}} 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+30.\+05.\+2025 
+\end{DoxyDate}
+\begin{DoxyVersion}{Version}
+1.\+0 
+\end{DoxyVersion}
+\begin{DoxySeeAlso}{See also}
+\href{https://github.com/gdaneek/GOST-34.11-2018}{\texttt{ https\+://github.\+com/gdaneek/\+GOST-\/34.\+11-\/2018}} 
+\end{DoxySeeAlso}
+
+
+\doxysubsection{Enumeration Type Documentation}
+\mbox{\Hypertarget{streebog_8hh_a7eabd788dcab19ca586663bf73deddf5}\label{streebog_8hh_a7eabd788dcab19ca586663bf73deddf5}} 
+\index{streebog.hh@{streebog.hh}!MODE@{MODE}}
+\index{MODE@{MODE}!streebog.hh@{streebog.hh}}
+\doxysubsubsection{\texorpdfstring{MODE}{MODE}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{streebog_8hh_a7eabd788dcab19ca586663bf73deddf5}{MODE}}\hspace{0.3cm}{\ttfamily [strong]}}
+
+
+
+list of available operating modes 
+
+\begin{DoxyNote}{Note}
+{\ttfamily Hxxx}means a xxx-\/bit hash algorithm 
+\end{DoxyNote}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{streebog_8hh_a3e72ecded83eb94381c3eff5f2f1703c}\label{streebog_8hh_a3e72ecded83eb94381c3eff5f2f1703c}} 
+\index{streebog.hh@{streebog.hh}!streebog@{streebog}}
+\index{streebog@{streebog}!streebog.hh@{streebog.hh}}
+\doxysubsubsection{\texorpdfstring{streebog()}{streebog()}}
+{\footnotesize\ttfamily void streebog (\begin{DoxyParamCaption}\item[{uint8\+\_\+t const $\ast$const}]{in,  }\item[{const uint64\+\_\+t}]{bytes\+\_\+n,  }\item[{uint8\+\_\+t $\ast$const}]{out,  }\item[{const \mbox{\hyperlink{streebog_8hh_a7eabd788dcab19ca586663bf73deddf5}{MODE}}}]{mode = {\ttfamily MODE\+:\+:H256} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [noexcept]}}
+
+
+
+implementation of both 256-\/bit and 512-\/bit hash algorithms 
+
+
+\begin{DoxyParams}{Parameters}
+{\em in} & pointer to input data \\
+\hline
+{\em bytes\+\_\+n} & input data size in bytes \\
+\hline
+{\em out} & array to write out the result (256-\/bit or 512-\/bit hash) \\
+\hline
+\end{DoxyParams}
+\begin{DoxyNote}{Note}
+use MODE enumeration to select hash algorithm 
+\end{DoxyNote}
+\mbox{\Hypertarget{streebog_8hh_ab4fb3fb7323bbfe049c1baaa9d6a2b71}\label{streebog_8hh_ab4fb3fb7323bbfe049c1baaa9d6a2b71}} 
+\index{streebog.hh@{streebog.hh}!streebog256@{streebog256}}
+\index{streebog256@{streebog256}!streebog.hh@{streebog.hh}}
+\doxysubsubsection{\texorpdfstring{streebog256()}{streebog256()}}
+{\footnotesize\ttfamily void streebog256 (\begin{DoxyParamCaption}\item[{uint8\+\_\+t const $\ast$const}]{in,  }\item[{const uint64\+\_\+t}]{bytes\+\_\+n,  }\item[{uint8\+\_\+t $\ast$const}]{out }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [noexcept]}}
+
+
+
+implementation of 256-\/bit hash algorithm 
+
+
+\begin{DoxyParams}{Parameters}
+{\em in} & pointer to input data \\
+\hline
+{\em bytes\+\_\+n} & input data size in bytes \\
+\hline
+{\em out} & array to write out the result (256-\/bit hash) \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{streebog_8hh_aa3f563d631001679eab3b8d32501d114}\label{streebog_8hh_aa3f563d631001679eab3b8d32501d114}} 
+\index{streebog.hh@{streebog.hh}!streebog512@{streebog512}}
+\index{streebog512@{streebog512}!streebog.hh@{streebog.hh}}
+\doxysubsubsection{\texorpdfstring{streebog512()}{streebog512()}}
+{\footnotesize\ttfamily void streebog512 (\begin{DoxyParamCaption}\item[{uint8\+\_\+t const $\ast$const}]{in,  }\item[{const uint64\+\_\+t}]{bytes\+\_\+n,  }\item[{uint8\+\_\+t $\ast$const}]{out }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [noexcept]}}
+
+
+
+implementation of 512-\/bit hash algorithm 
+
+
+\begin{DoxyParams}{Parameters}
+{\em in} & pointer to input data \\
+\hline
+{\em bytes\+\_\+n} & input data size in bytes \\
+\hline
+{\em out} & array to write out the result (256-\/bit hash) \\
+\hline
+\end{DoxyParams}
