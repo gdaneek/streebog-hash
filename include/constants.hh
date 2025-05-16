@@ -3,12 +3,13 @@
  * @brief   Constants for GOST 34.11-2018 hash functions 256 and 512 bits
  * @author  https://github.com/gdaneek
  * @date    30.05.2025
- * @version 1.0
+ * @version 1.1
  * @see https://github.com/gdaneek/GOST-34.11-2018
  */
 
 #pragma once
-#include <cstdint>
+
+#include <stdint.h>
 
 constexpr uint8_t pi[] = {
     0xfc, 0xee, 0xdd, 0x11, 0xcf, 0x6e, 0x31, 0x16, 0xfb, 0xc4, 0xfa, 0xda, 0x23, 0xc5, 0x04, 0x4d,

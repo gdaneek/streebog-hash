@@ -11,10 +11,8 @@
 #include "doctest.h"
 
 #include "streebog.hh"
-#include <algorithm> // for std::equal
 
-
-const uint8_t small_m[] = {
+const uint8_t small_m[] = { // input msg - control examples 1, 3 from the document application
          0x32,0x31,0x30,0x39,0x38,0x37,0x36,
     0x35,0x34,0x33,0x32,0x31,0x30,0x39,0x38,
     0x37,0x36,0x35,0x34,0x33,0x32,0x31,0x30,
@@ -26,7 +24,7 @@ const uint8_t small_m[] = {
 };
 
 
-const uint8_t big_m[] = {
+const uint8_t big_m[] = { // input msg - control examples 2, 4 from the document application
     0xfb,0xe2,0xe5,0xf0,0xee,0xe3,0xc8,0x20,
     0xfb,0xea,0xfa,0xeb,0xef,0x20,0xff,0xfb,
     0xf0,0xe1,0xe0,0xf0,0xf5,0x20,0xe0,0xed,
@@ -37,6 +35,16 @@ const uint8_t big_m[] = {
     0xee,0xe1,0xe8,0xf0,0xf2,0xd1,0x20,0x2c,
     0xe8,0xf0,0xf2,0xe5,0xe2,0x20,0xe5,0xd1
 };
+
+
+template<typename T>
+bool equal(T const * const lhs, const uint64_t lhs_sz, T const * const rhs) {   // i dont want use <algorithm> for only this func
+    bool flag = true;
+    for(auto i = 0ull;i < lhs_sz;++i)
+        flag &= (lhs[i] == rhs[i]);
+
+    return flag;
+}
 
 
 TEST_SUITE("hash 512-bit") {
@@ -55,7 +63,7 @@ TEST_SUITE("hash 512-bit") {
         }, out[8]{};
 
         streebog512(small_m, sizeof(small_m), (uint8_t*)out);
-        REQUIRE(std::equal(expected, expected + 8, out));
+        REQUIRE(equal(expected, 8, out));
     }
 
     TEST_CASE("big message") {
@@ -72,7 +80,7 @@ TEST_SUITE("hash 512-bit") {
         }, out[8]{};
 
         streebog512((const uint8_t*)big_m, sizeof(big_m), (uint8_t*)out);
-        REQUIRE(std::equal(expected, expected + 8, out));
+        REQUIRE(equal(expected, 8, out));
     }
 }
 
@@ -89,7 +97,7 @@ TEST_SUITE("hash 256-bit") {
         }, out[4]{};
 
         streebog256((const uint8_t*)small_m, sizeof(small_m), (uint8_t*)out);
-        REQUIRE(std::equal(expected, expected + 4, out));
+        REQUIRE(equal(expected, 4, out));
     }
 
     TEST_CASE("big message") {
@@ -102,7 +110,7 @@ TEST_SUITE("hash 256-bit") {
         }, out[4]{};
 
         streebog256(big_m, sizeof(big_m), (uint8_t*)out);
-        REQUIRE(std::equal(expected, expected + 4, out));
+        REQUIRE(equal(expected, 4, out));
     }
 }
 
