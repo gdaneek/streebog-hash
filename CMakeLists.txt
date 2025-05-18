@@ -32,9 +32,9 @@ foreach(target IN LISTS TARGETS streebog)
         -std=c++20
         -O3
         -Ofast
-        -Os
+        # -Os
         -march=native
-        -funroll-loops
+      #  -funroll-loops
         -flto
         -fno-exceptions
         -fno-rtti

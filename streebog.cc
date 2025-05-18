@@ -99,6 +99,24 @@ constexpr inline auto P(T * const in) {
     return in;
 }
 
+template<typename T>
+consteval T b() {
+        T out{};
+        for(auto i = 0;i < 8;i++) {
+            uint8_t byte = 0;
+            for(auto j = 0;j < 256;j++, byte++) {
+                for(auto t = 0;t < 8;t++)
+                    out.data[i][j] ^= ((!(byte&(1<<t))-1)&m_A[63-t-(i<< 3)]);
+            }
+        }
+
+        return out;
+}
+constexpr struct {uint64_t data[8][256]; } v = b<std::remove_cv_t<decltype(v)>>();
+
+constexpr inline auto get_precalc_mmul(const uint8_t byte_num, const uint8_t byte_val) {
+    return v.data[byte_num][byte_val];
+}
 
 /**
  * @brief Implementation of the L transformation (GF2 mmul)
@@ -111,11 +129,18 @@ template<typename T>
 constexpr inline auto L(T * const in) {
 
 #ifdef METAPROG_UNROLL
+//     unroll<8>([in]<uint64_t i>() {
+//         in[i] = unroll<64>(
+//             []<uint64_t j>(T v) { return ((T)!(v&1ull<<j)-1)&m_A[63-j]; },
+//             [](auto&&... args){return (args ^ ...);},
+//             in[i]);
+//     });
     unroll<8>([in]<uint64_t i>() {
-        in[i] = unroll<64>(
-            []<uint64_t j>(T v) { return ((T)!(v&1ull<<j)-1)&m_A[63-j]; },
-            [](auto&&... args){return (args ^ ...);},
-            in[i]);
+        in[i] = unroll<sizeof(T)>(
+            [&]<uint64_t j>(uint64_t v){return ((T)get_precalc_mmul(j, ((v >> (8 * j)) & 0xFF ))) ;},
+            [](auto&&... args){return (args ^ ...); },
+            in[i]
+        );
     });
 #else
     for(T i = 0, r = 0;i < 8;in[i++] = r, r = 0)
@@ -274,6 +299,7 @@ constexpr inline auto endianess_swap(uint64_t * const dst, uint64_t const * cons
 
 }
 
+
 // TODO: rewrite code to remove swaps. idk why devs of the algorithm chose such an inconvenient endianess
 //  in addition, it would be more logical to take the blocks for processing not from the end, but from the beginning of the message
 template<MODE mode>
@@ -301,6 +327,7 @@ inline void streebog(uint8_t const * const m, const uint64_t size, uint8_t * con
     const auto rem = size - it;
     auto _b = (uint8_t*)buff;
 
+
 #ifdef METAPROG_UNROLL
     unroll<8>([&]<uint64_t i>(){buff[i] = 0;});
 #else
@@ -309,10 +336,10 @@ inline void streebog(uint8_t const * const m, const uint64_t size, uint8_t * con
 
     for(auto i = 0;i < rem; ++i)
         _b[i+64-rem] = m[i];
-
     _b[64 - rem - 1] = 0x01;
-
     endianess_swap(buff, buff);
+
+
     G(n, h, buff, h);
 
     n[7] += (rem << 3);
