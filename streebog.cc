@@ -299,7 +299,6 @@ constexpr inline auto endianess_swap(uint64_t * const dst, uint64_t const * cons
 
 }
 
-
 // TODO: rewrite code to remove swaps. idk why devs of the algorithm chose such an inconvenient endianess
 //  in addition, it would be more logical to take the blocks for processing not from the end, but from the beginning of the message
 template<MODE mode>
@@ -310,6 +309,8 @@ inline void streebog(uint8_t const * const m, const uint64_t size, uint8_t * con
     constexpr static uint64_t zero[8]{};
 
     get_IV(mode, h); // compile-time filling
+
+#ifndef STANDARD_AS_LITTLE_ENDIAN
 
     for(;it + block - 1 < size;it += block) {
         auto m64 = (uint64_t const * const)m + (size - block - it >> 3);
@@ -324,9 +325,21 @@ inline void streebog(uint8_t const * const m, const uint64_t size, uint8_t * con
         n[7] += 0x200; // ATTENTION: the index (7) depends on endianess?
     }
 
+#else
+   for(;it + block - 1 < size;it += block) {
+        auto m64 = (uint64_t const * const)m + (it >> 3);
+        for(auto i = 0;i < 8;i++) buff[7-i] = m64[i];
+        G(n, h, buff, h);
+        i512_sum(sum, buff, sum);
+
+        n[7] += 0x200; // ATTENTION: the index (7) depends on endianess?
+    }
+#endif
+
     const auto rem = size - it;
     auto _b = (uint8_t*)buff;
 
+#ifndef STANDARD_AS_LITTLE_ENDIAN
 
 #ifdef METAPROG_UNROLL
     unroll<8>([&]<uint64_t i>(){buff[i] = 0;});
@@ -339,6 +352,24 @@ inline void streebog(uint8_t const * const m, const uint64_t size, uint8_t * con
     _b[64 - rem - 1] = 0x01;
     endianess_swap(buff, buff);
 
+#else // STANDARD_AS_LITTLE_ENDIAN
+
+
+#ifdef METAPROG_UNROLL
+    unroll<8>([&]<uint64_t i>(){buff[i] = 0;});
+#else
+    for(auto i = 0;i < 8;buff[i++] = 0);
+#endif
+
+    for(auto i = 0;i < 8;i++) buff[i] = 0;
+   for(auto i = 0;i < rem; ++i)
+        _b[i] = m[i + it];
+   _b[rem] = 0x01;
+
+    for(auto i = 0;i < 4;i++)
+        std::swap(buff[i], buff[7-i]);
+
+#endif  // STANDARD_AS_LITTLE_ENDIAN
 
     G(n, h, buff, h);
 

@@ -5,7 +5,7 @@ project(streebog)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(TARGETS stbg streebog512 streebog256)
+set(TARGETS stbg streebog512 streebog256 stbg512-le)
 
 foreach(target IN LISTS TARGETS)
 add_executable(${target} streebog.cc examples/example.cc)
@@ -18,6 +18,7 @@ target_include_directories(streebog PUBLIC include/)
 
 target_compile_options(streebog256 PRIVATE -DH256_ONLY)
 target_compile_options(streebog512 PRIVATE -DH512_ONLY)
+target_compile_options(stbg512-le PRIVATE -DH512_ONLY -DSTANDARD_AS_LITTLE_ENDIAN)
 
 add_executable(tests streebog.cc tests/streebog_test.cc )
 target_include_directories(tests PUBLIC include/)
