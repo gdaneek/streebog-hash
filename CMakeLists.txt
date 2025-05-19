@@ -12,12 +12,12 @@ target_include_directories(stbg PUBLIC include/)
 
 add_executable(stbg512 streebog.cc examples/example.cc)
 target_include_directories(stbg512 PUBLIC include/)
-target_compile_options(stbg512 PRIVATE -DH512_ONLY)
+target_compile_options(stbg512 PRIVATE)
 
 
 add_executable(stbg256 streebog.cc examples/example.cc)
 target_include_directories(stbg256 PUBLIC include/)
-target_compile_options(stbg256 PRIVATE -DH256_ONLY)
+target_compile_options(stbg256 PRIVATE)
 
 
 add_library(streebog STATIC streebog.cc)
@@ -31,12 +31,12 @@ foreach(target IN LISTS TARGETS streebog)
         -std=c++20
         -O3
         #-Ofast
-        # -Os
-        #-march=native
-      #  -funroll-loops
-        #-flto
+        #-g
+        -march=native
+        -flto
         -fno-exceptions
         -fno-rtti
+
         #-fno-semantic-interposition
         #-fno-asynchronous-unwind-tables
         #-fno-unwind-tables
@@ -45,12 +45,12 @@ foreach(target IN LISTS TARGETS streebog)
     )
 endforeach()
 
-#[[
+
 enable_testing()
 
 add_executable(tests streebog.cc tests/streebog_test.cc )
 target_include_directories(tests PUBLIC include/)
 add_test(NAME streebog_tests COMMAND tests)
-target_compile_options(tests PRIVATE -DMETAPROG_UNROLL)]]
+target_compile_options(tests PRIVATE)
 
 

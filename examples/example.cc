@@ -8,8 +8,7 @@
 #include <string.h>
 #include <cinttypes>
 
-// Размер чанка (256 КБ)
-#define CHUNK_SIZE 65536
+#define CHUNK_SIZE 1048576
 
 int main(int argc, char** argv) {
     if (argc != 2) {
@@ -17,22 +16,20 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    // 1. Открываем файл с O_DIRECT (требует выровненного буфера)
     int fd = open(argv[1], O_RDONLY | O_DIRECT);
     if (fd == -1) {
         fprintf(stderr, "Ошибка открытия файла: %s\n", strerror(errno));
         return 1;
     }
 
-    // 2. Выделяем выровненную память (обязательно для O_DIRECT)
     char* buf;
-    if (posix_memalign((void**)&buf, 64, CHUNK_SIZE)) {
+    if (posix_memalign((void**)&buf, 32, CHUNK_SIZE)) {
         perror("posix_memalign");
         close(fd);
         return 1;
     }
 
-    Streebog stbg(MODE::H512);
+    Streebog stbg(Streebog::Mode::H512);
 
     ssize_t bytes_read;
 
