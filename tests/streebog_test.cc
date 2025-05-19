@@ -60,12 +60,11 @@ TEST_SUITE("hash 512-bit") {
             0x11c324f074654c38,
             0x7fef082b3381a4e2,
             0x486f64c191787941
-        };
+        }, out[8];
 
-        Streebog stbg{Streebog::Mode::H512};
-        auto res = stbg.finalize(small_m, sizeof(small_m));
+       Streebog{Streebog::Mode::H512}((void*)small_m, sizeof(small_m), out);
 
-        REQUIRE(equal(expected, 8, res));
+        REQUIRE(equal(expected, 8, out));
     }
 
     TEST_CASE("big message") {
@@ -79,12 +78,11 @@ TEST_SUITE("hash 512-bit") {
             0xb3e56c497ccd0f62,
             0x60642bdcddb90c3f,
             0x28fbc9bada033b14
-        };
+        }, out[8];
 
-        Streebog stbg{Streebog::Mode::H512};
-        auto res = stbg.finalize(big_m, sizeof(big_m));
+       Streebog{Streebog::Mode::H512}((void*)big_m, sizeof(big_m), out);
 
-        REQUIRE(equal(expected, 8, res));
+        REQUIRE(equal(expected, 8, out));
     }
 }
 
@@ -98,12 +96,11 @@ TEST_SUITE("hash 256-bit") {
             0x27f94ab76cbaa6da,
             0xa449b16b0251d05d,
             0x00557be5e584fd52
-        };
+        }, out[4];
 
-        Streebog stbg{Streebog::Mode::H256};
-        auto res = stbg.finalize(small_m, sizeof(small_m));
+        Streebog{Streebog::Mode::H256}((void*)small_m, sizeof(small_m), out);
 
-        REQUIRE(equal(expected, 4, res+4));
+        REQUIRE(equal(expected, 4, out));
     }
 
     TEST_CASE("big message") {
@@ -113,12 +110,11 @@ TEST_SUITE("hash 256-bit") {
             0xb005746d97537fa8,
             0x749a66fc28c6cac0,
             0x508f7e553c06501d
-        };
+        }, out[4];
 
-        Streebog stbg{Streebog::Mode::H256};
-        auto res = stbg.finalize(big_m, sizeof(big_m));
+       Streebog{Streebog::Mode::H256}((void*)big_m, sizeof(big_m), out);
 
-        REQUIRE(equal(expected, 4, res+4));
+        REQUIRE(equal(expected, 4, out));
     }
 }
 

@@ -44,10 +44,8 @@ void Streebog::i512_sum(const uint64_t * const a, uint64_t const * const b, uint
 }
 
 
-Streebog::Streebog(const Mode mode){ this->reset(mode); }
-
-void Streebog::reset(const Mode mode) {
-    get_IV(mode, h);
+void Streebog::reset() {
+    get_IV(this->mode, h);
     memset(n, 0, sizeof(n));
     memset(sum, 0, sizeof(sum));
 }
@@ -105,19 +103,21 @@ void  Streebog::update(void* m, const uint64_t size) {   // make void*
     }
 }
 
-uint64_t const * const Streebog::finalize(uint8_t const * const m, const uint64_t size) {
+uint64_t const * const Streebog::finalize(void* m, const uint64_t size) {
+
+    auto mb = (uint8_t const * const)m;
     auto blocks_n = size >> 6;
     uint64_t _d = blocks_n << 6;
 
     uint64_t buff[8]{};
 
-    this->update((void*)m, _d);
+    this->update((void*)mb, _d);
 
     auto rem = size - _d;
     auto _b = (uint8_t*)buff;
 
     for(auto i = 0;i < rem; ++i)
-        _b[i] = m[i + _d];
+        _b[i] = mb[i + _d];
     _b[rem] = 0x01;
 
     G(buff);
@@ -130,4 +130,15 @@ uint64_t const * const Streebog::finalize(uint8_t const * const m, const uint64_
     G(sum, true);
 
     return this->h;
+}
+
+uint64_t const * const Streebog::operator()(void* m, const uint64_t size, void* out) {
+    auto ret = this->finalize(m, size);
+    if(out == nullptr)
+        return ret;
+
+    for(auto i = 0;i < (mode == Mode::H512? 8 : 4);i++)
+        ((uint64_t*)out)[i] = ret[i + (mode == Mode::H512? 0 : 4)];
+
+    return ret;
 }

@@ -37,7 +37,7 @@ int main(int argc, char** argv) {
 
     while ((bytes_read = read(fd, buf, CHUNK_SIZE)) > 0) {
         if(bytes_read < CHUNK_SIZE) {
-            auto ret = stbg.finalize((const uint8_t*)buf, bytes_read);
+            auto ret = stbg.finalize((uint8_t*)buf, bytes_read);
             for(auto i = 0;i < 8;hash[i++] = ret[i]);
         } else stbg.update(buf, bytes_read);
 

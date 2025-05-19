@@ -1,0 +1,145 @@
+\hypertarget{classStreebog}{}\doxysection{Streebog Class Reference}
+\label{classStreebog}\index{Streebog@{Streebog}}
+
+
+GOST 34.\+11-\/2018 (34.\+11-\/2012 -\/ {\ttfamily \mbox{\hyperlink{classStreebog}{Streebog}}}) implementation with block-\/by-\/block hash calculation support.  
+
+
+
+
+{\ttfamily \#include $<$streebog.\+hh$>$}
+
+\doxysubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+enum class \mbox{\hyperlink{classStreebog_a8d291745db233e546d07937c4183397b}{Mode}} \{ {\bfseries H512}
+, {\bfseries H256}
+, {\bfseries \+\_\+\+\_\+\+COUNT\+\_\+\+\_\+}
+ \}
+\begin{DoxyCompactList}\small\item\em operating modes of the hash function \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{classStreebog_a8c4b122a2f2ca7e32399009c687a636c}{reset}} ()
+\begin{DoxyCompactList}\small\item\em forcibly resets the state of the class \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classStreebog_a642a15e33b9295cde257267bc8d07111}\label{classStreebog_a642a15e33b9295cde257267bc8d07111}} 
+{\bfseries Streebog} (const \mbox{\hyperlink{classStreebog_a8d291745db233e546d07937c4183397b}{Mode}} \+\_\+mode)
+\item 
+void \mbox{\hyperlink{classStreebog_aa556cd309556314cc8c048a87ea17657}{update}} (void $\ast$m, const uint64\+\_\+t size)
+\begin{DoxyCompactList}\small\item\em calculates the partial hash of a chunk of data \end{DoxyCompactList}\item 
+uint64\+\_\+t const  $\ast$const \mbox{\hyperlink{classStreebog_aa40962c4f6c3b1be130a970745b01c82}{finalize}} (void $\ast$m, const uint64\+\_\+t size)
+\begin{DoxyCompactList}\small\item\em processes the last chunk of data, calculating the resulting hash \end{DoxyCompactList}\item 
+uint64\+\_\+t const  $\ast$const \mbox{\hyperlink{classStreebog_a42a28a6beeefc8a58523f9009aac3a79}{operator()}} (void $\ast$m, const uint64\+\_\+t size, void $\ast$out=nullptr)
+\begin{DoxyCompactList}\small\item\em alias for \mbox{\hyperlink{classStreebog_aa40962c4f6c3b1be130a970745b01c82}{finalize()}} method \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classStreebog_a7f7f13fb24432283a525892c56bc8835}\label{classStreebog_a7f7f13fb24432283a525892c56bc8835}} 
+const \mbox{\hyperlink{classStreebog_a8d291745db233e546d07937c4183397b}{Mode}} {\bfseries mode}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+GOST 34.\+11-\/2018 (34.\+11-\/2012 -\/ {\ttfamily \mbox{\hyperlink{classStreebog}{Streebog}}}) implementation with block-\/by-\/block hash calculation support. 
+
+The standard does not explicitly declare endianness, so this implementation follows the little-\/endian approach as the most optimal in terms of programming and performance. Instantiate an object and calculate big data hashes using a combination of update (updates the state of h, n, sum) and finalize (implements final processing). For simple cases (when all the data has already been placed in the buffer), it is rational to use the class as a functor called immediately after creation, or the more convenient functional wrapper streebog below.
+
+\begin{DoxyWarning}{Warning}
+by default, the resulting hash is written in little endian (i.\+e., back to how it is presented in the control examples) 
+\end{DoxyWarning}
+
+
+\doxysubsection{Member Enumeration Documentation}
+\mbox{\Hypertarget{classStreebog_a8d291745db233e546d07937c4183397b}\label{classStreebog_a8d291745db233e546d07937c4183397b}} 
+\index{Streebog@{Streebog}!Mode@{Mode}}
+\index{Mode@{Mode}!Streebog@{Streebog}}
+\doxysubsubsection{\texorpdfstring{Mode}{Mode}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{classStreebog_a8d291745db233e546d07937c4183397b}{Streebog\+::\+Mode}}\hspace{0.3cm}{\ttfamily [strong]}}
+
+
+
+operating modes of the hash function 
+
+\begin{DoxyNote}{Note}
+Hxxx means xxx-\/bit hash function mode 
+\end{DoxyNote}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classStreebog_aa40962c4f6c3b1be130a970745b01c82}\label{classStreebog_aa40962c4f6c3b1be130a970745b01c82}} 
+\index{Streebog@{Streebog}!finalize@{finalize}}
+\index{finalize@{finalize}!Streebog@{Streebog}}
+\doxysubsubsection{\texorpdfstring{finalize()}{finalize()}}
+{\footnotesize\ttfamily uint64\+\_\+t const$\ast$ const Streebog\+::finalize (\begin{DoxyParamCaption}\item[{void $\ast$}]{m,  }\item[{const uint64\+\_\+t}]{size }\end{DoxyParamCaption})}
+
+
+
+processes the last chunk of data, calculating the resulting hash 
+
+
+\begin{DoxyParams}{Parameters}
+{\em m} & input data \\
+\hline
+{\em size} & data size in bytes \\
+\hline
+\end{DoxyParams}
+\begin{DoxyNote}{Note}
+use operator() for a more convenient call if you can provide all the data at once 
+\end{DoxyNote}
+\mbox{\Hypertarget{classStreebog_a42a28a6beeefc8a58523f9009aac3a79}\label{classStreebog_a42a28a6beeefc8a58523f9009aac3a79}} 
+\index{Streebog@{Streebog}!operator()@{operator()}}
+\index{operator()@{operator()}!Streebog@{Streebog}}
+\doxysubsubsection{\texorpdfstring{operator()()}{operator()()}}
+{\footnotesize\ttfamily uint64\+\_\+t const$\ast$ const Streebog\+::operator() (\begin{DoxyParamCaption}\item[{void $\ast$}]{m,  }\item[{const uint64\+\_\+t}]{size,  }\item[{void $\ast$}]{out = {\ttfamily nullptr} }\end{DoxyParamCaption})}
+
+
+
+alias for \mbox{\hyperlink{classStreebog_aa40962c4f6c3b1be130a970745b01c82}{finalize()}} method 
+
+
+\begin{DoxyParams}{Parameters}
+{\em m} & input data \\
+\hline
+{\em size} & data size in bytes \\
+\hline
+{\em out} & array for writing output; it may not be provided, and then the function will work exactly the same as \mbox{\hyperlink{classStreebog_aa40962c4f6c3b1be130a970745b01c82}{finalize()}} \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classStreebog_a8c4b122a2f2ca7e32399009c687a636c}\label{classStreebog_a8c4b122a2f2ca7e32399009c687a636c}} 
+\index{Streebog@{Streebog}!reset@{reset}}
+\index{reset@{reset}!Streebog@{Streebog}}
+\doxysubsubsection{\texorpdfstring{reset()}{reset()}}
+{\footnotesize\ttfamily void Streebog\+::reset (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+forcibly resets the state of the class 
+
+\begin{DoxyNote}{Note}
+h variable takes the IV (init vector) value corresponding to the operating mode 
+\end{DoxyNote}
+\mbox{\Hypertarget{classStreebog_aa556cd309556314cc8c048a87ea17657}\label{classStreebog_aa556cd309556314cc8c048a87ea17657}} 
+\index{Streebog@{Streebog}!update@{update}}
+\index{update@{update}!Streebog@{Streebog}}
+\doxysubsubsection{\texorpdfstring{update()}{update()}}
+{\footnotesize\ttfamily void Streebog\+::update (\begin{DoxyParamCaption}\item[{void $\ast$}]{m,  }\item[{const uint64\+\_\+t}]{size }\end{DoxyParamCaption})}
+
+
+
+calculates the partial hash of a chunk of data 
+
+
+\begin{DoxyParams}{Parameters}
+{\em m} & input data \\
+\hline
+{\em size} & data size in bytes \\
+\hline
+\end{DoxyParams}
+\begin{DoxyWarning}{Warning}
+do not use this method if you can immediately provide all the data that you need to calculate the hash from. Instead, use operator() or \mbox{\hyperlink{classStreebog_aa40962c4f6c3b1be130a970745b01c82}{finalize()}}. 
+\end{DoxyWarning}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{streebog_8hh}{streebog.\+hh}}\end{DoxyCompactItemize}
