@@ -1,44 +1,64 @@
  
 #include "streebog.hh"
-
-#include <sys/mman.h>
-#include <fcntl.h>
-#include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <inttypes.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <errno.h>
+#include <string.h>
+#include <cinttypes>
 
-int main(int argc, char* argv[]) {
+// Размер чанка (256 КБ)
+#define CHUNK_SIZE 65536
 
-    int fd = open(argv[1], O_RDONLY);
-    if (fd == -1)
+int main(int argc, char** argv) {
+    if (argc != 2) {
+        fprintf(stderr, "Использование: %s <файл>\n", argv[0]);
         return 1;
+    }
 
-    uint64_t file_size = lseek(fd, 0, SEEK_END);
-    lseek(fd, 0, SEEK_SET);
+    // 1. Открываем файл с O_DIRECT (требует выровненного буфера)
+    int fd = open(argv[1], O_RDONLY | O_DIRECT);
+    if (fd == -1) {
+        fprintf(stderr, "Ошибка открытия файла: %s\n", strerror(errno));
+        return 1;
+    }
 
-    void* mapped = mmap(nullptr, file_size, PROT_READ, MAP_PRIVATE, fd, 0);
-    if (mapped == MAP_FAILED) {
+    // 2. Выделяем выровненную память (обязательно для O_DIRECT)
+    char* buf;
+    if (posix_memalign((void**)&buf, 64, CHUNK_SIZE)) {
+        perror("posix_memalign");
         close(fd);
         return 1;
     }
 
-    uint64_t out[8];
-    #ifdef H512_ONLY
-    streebog512((const uint8_t*)mapped, file_size, (uint8_t*)out);
-    constexpr int real_sz = 8;
-    #elif defined(H256_ONLY)
-    streebog256((const uint8_t*)mapped, file_size, (uint8_t*)out);
-    constexpr int real_sz = 4;
-    #else
-    auto mode = (MODE)atoi(argv[2]);
-    streebog((const uint8_t*)mapped, file_size, (uint8_t*)out, mode);
-    int real_sz = (mode == MODE::H256)? 4 : 8;
-    #endif
+    Streebog stbg(MODE::H512);
 
-    for(int i = 0; i < real_sz; i++)
-        printf("%016" PRIx64, out[i]);
+    ssize_t bytes_read;
+
+    uint64_t hash[8];
+
+    while ((bytes_read = read(fd, buf, CHUNK_SIZE)) > 0) {
+        if(bytes_read < CHUNK_SIZE) {
+            auto ret = stbg.finalize((const uint8_t*)buf, bytes_read);
+            for(auto i = 0;i < 8;hash[i++] = ret[i]);
+        } else stbg.update(buf, bytes_read);
+
+
+    }
+
+    if (bytes_read == -1) {
+        perror("read");
+        free(buf);
+        close(fd);
+        return 1;
+    }
+
+    for(int i = 7; i > -1; i--)
+        printf("%016" PRIx64, hash[i]);
     printf("\n");
 
+    free(buf);
+    close(fd);
     return 0;
 }

@@ -21,70 +21,25 @@ enum class MODE {
 };
 
 
-/**
- * @brief implementation of 256-bit hash algorithm
- * @param in pointer to input data
- * @param bytes_n input data size in bytes
- * @param out array to write out the result (256-bit hash)
- */
-void streebog256(uint8_t const * const in, const uint64_t bytes_n, uint8_t * const out);
+class Streebog {
+    uint64_t n[8];
+    uint64_t sum[8];
+    uint64_t h[8];
+    uint64_t K[8], tmp2[8];
+    uint64_t tmp3[8];
 
+    void i512_sum(const uint64_t * const l, uint64_t const * const r, uint64_t * const o);
 
-/**
- * @brief implementation of 512-bit hash algorithm
- * @param in pointer to input data
- * @param bytes_n input data size in bytes
- * @param out array to write out the result (256-bit hash)
- */
-void streebog512(uint8_t const * const in, const uint64_t bytes_n, uint8_t * const out);
+    void LPS(uint64_t* in);
+    void X(uint64_t const * const l, uint64_t const * const r, uint64_t * const o);
+    void G(uint64_t const * const m, bool is_zero = false);
 
+public:
 
-/**
- * @brief implementation of  both 256-bit and 512-bit hash algorithms
- * @param in pointer to input data
- * @param bytes_n input data size in bytes
- * @param out array to write out the result (256-bit or 512-bit hash)
- * @note use MODE enumeration to select hash algorithm
- */
-void streebog(uint8_t const * const in, const uint64_t bytes_n, uint8_t * const out, const MODE mode = MODE::H256);
+    inline static constexpr auto block = 64; // 64 bytes
 
-
-
-
-
-#ifdef ENABLE_STREEBOG_WRAPPERS
-
-#include<array>
-#include <utility>
-
-template<typename T>
-inline auto streebog256(T const * const in, const uint64_t bytes_n) noexcept {
-    std::array<uint8_t, 32> out;
-    streebog256((uint8_t const * const)in, sizeof(T) * bytes_n, out.data());
-    return out;
-}
-
-template<typename T>
-inline auto streebog512(T const * const in, const uint64_t bytes_n) noexcept {
-    std::array<uint8_t, 64> out;
-    streebog512((uint8_t const * const)in, sizeof(T) * bytes_n, out.data());
-    return out;
-}
-
-
-inline auto streebog256(auto&& cc) {    // cc - continuous (in-memory) container
-    return streebog256(cc.data(), cc.size());
-}
-
-
-inline auto streebog512(auto&& cc) {    // cc - continuous (in-memory) container
-    return streebog512(cc.data(), cc.size());
-}
-
-
-inline auto streebog(const MODE mode, auto&&... args) {
-    return (mode == MODE::H512? streebog512(std::forward<decltype(args)>(args)...)
-                              : streebog256(std::forward<decltype(args)>(args)...));
-}
-
-#endif
+     explicit Streebog(MODE mode);
+     void update(void* m, const uint64_t size);
+     uint64_t const * const finalize(uint8_t const * const m, const uint64_t size);
+    auto operator()(auto&&... args);
+};
