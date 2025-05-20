@@ -8,7 +8,7 @@
 #include <string.h>
 #include <cinttypes>
 
-#define CHUNK_SIZE (1ull << 16)
+#define CHUNK_SIZE (1ull << 18) // 256KB
 
 int main(int argc, char** argv) {
     int fd = open(argv[1], O_RDONLY | O_DIRECT);

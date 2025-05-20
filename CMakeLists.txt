@@ -22,6 +22,7 @@ target_compile_options(stbg256 PRIVATE)
 
 add_library(streebog STATIC streebog.cc)
 target_include_directories(streebog PUBLIC include/)
+target_compile_options(streebog PRIVATE -DSTREEBOG_ENABLE_WRAPPERS)
 
 
 set(TARGETS stbg stbg512 stbg256)
