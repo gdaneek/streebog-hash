@@ -3,13 +3,18 @@
  * @brief   GOST 34.11-2018 hash functions 256 and 512 bits
  * @author  https://github.com/gdaneek
  * @date    30.05.2025
- * @version 2.0
+ * @version 2.1
  * @see https://github.com/gdaneek/GOST-34.11-2018
  */
 
 #pragma once
 #include <stdint.h>
 
+#if defined(__AVX2__)
+
+#include <immintrin.h>
+
+#endif
 
 /**
  * @brief GOST 34.11-2018 (34.11-2012 - `Streebog`) implementation with block-by-block hash calculation support
@@ -23,13 +28,15 @@
  * @warning by default, the resulting hash is written in little endian (i.e., back to how it is presented in the control examples)
  */
 class Streebog {
-    alignas(32) uint64_t n[8]; ///< N variable (number of bits)
+
+    // TODO: vec regs for AVX
+
+    alignas(32) uint64_t n[8];   ///< N variable (number of bits)
     alignas(32) uint64_t sum[8]; ///< Σ variable (sum of all data blocks)
-    alignas(32) uint64_t h[8]; ///< h variable (output hash)
+    alignas(32) uint64_t h[8];   ///< h variable (output hash)
 
     void i512_sum(const uint64_t * const l, uint64_t const * const r, uint64_t * const o);
-
-    void LPS(uint64_t* in);
+    void LPS(uint64_t * const in);
     void X(uint64_t const * const l, uint64_t const * const r, uint64_t * const o);
     void G(uint64_t const * const m, bool is_zero = false);
 
@@ -45,7 +52,7 @@ public:
         __COUNT__
     };
 
-    const Mode mode;
+    const Mode mode; ///< current algo mode (512-bit | 256-bit)
 
     /**
      * @brief forcibly resets the state of the class
@@ -85,16 +92,6 @@ public:
 };
 
 
-/**
- * @brief A wrapper function for more convenient class invocation in hash calculations based on data provided immediately
- */
-inline uint64_t const * const streebog(const Streebog::Mode mode, void* in, const uint64_t in_sz, void* out) {
-    return Streebog{mode}(in, in_sz, out);
-}
-
-
-#ifdef STREEBOG_ENABLE_WRAPPERS
-
 inline uint64_t const * const streebog256(void* in, const uint64_t in_sz, void* out = nullptr) {
     return Streebog{Streebog::Mode::H256}(in, in_sz, out);
 }
@@ -109,6 +106,8 @@ inline auto streebog(void* in, const uint64_t in_sz, void* out = nullptr, const 
     return (mode == Streebog::Mode::H256? streebog256(in, in_sz, out) : streebog512(in, in_sz, out));
 }
 
+
+#ifdef STREEBOG_ENABLE_WRAPPERS
 
 #include <array>
 
@@ -126,7 +125,5 @@ inline auto streebog256(void* in, const uint64_t in_sz) {
 
     return out;
 }
-
-
 
 #endif

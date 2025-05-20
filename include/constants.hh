@@ -3,15 +3,14 @@
  * @brief   Constants for GOST 34.11-2018 hash functions 256 and 512 bits
  * @author  https://github.com/gdaneek
  * @date    30.05.2025
- * @version 2.0
+ * @version 2.1
  * @see https://github.com/gdaneek/GOST-34.11-2018
  */
 
 #pragma once
-
 #include <stdint.h>
 
-alignas(32) constexpr uint64_t pi[] = {
+constexpr uint32_t pi[] = {
     0xfc, 0xee, 0xdd, 0x11, 0xcf, 0x6e, 0x31, 0x16, 0xfb, 0xc4, 0xfa, 0xda, 0x23, 0xc5, 0x04, 0x4d,
     0xe9, 0x77, 0xf0, 0xdb, 0x93, 0x2e, 0x99, 0xba, 0x17, 0x36, 0xf1, 0xbb, 0x14, 0xcd, 0x5f, 0xc1,
     0xf9, 0x18, 0x65, 0x5a, 0xe2, 0x5c, 0xef, 0x21, 0x81, 0x1c, 0x3c, 0x42, 0x8b, 0x01, 0x8e, 0x4f,
@@ -53,8 +52,9 @@ constexpr uint64_t m_A[] = {
 
 constexpr uint64_t ITERS = 13; ///< Iterations (rounds)
 
-alignas(32) constexpr uint64_t C[ITERS * 8] = {
-   0xdd806559f2a64507, 0x5767436cc744d23, 0xa2422a08a460d315, 0x4b7ce09192676901, 0x714eb88d7585c4fc, 0x2f6a76432e45d016, 0xebcb2f81c0657c1f, 0xb1085bda1ecadae9,
+alignas(32)
+constexpr uint64_t C[ITERS * 8] = {
+    0xdd806559f2a64507, 0x5767436cc744d23, 0xa2422a08a460d315, 0x4b7ce09192676901, 0x714eb88d7585c4fc, 0x2f6a76432e45d016, 0xebcb2f81c0657c1f, 0xb1085bda1ecadae9,
     0xe679047021b19bb7, 0x55dda21bd7cbcd56, 0x5cb561c2db0aa7ca, 0x9ab5176b12d69958, 0x61d55e0f16b50131, 0xf3feea720a232b98, 0x4fe39d460f70b5d7, 0x6fa3b58aa99d2f1a,
     0x991e96f50aba0ab2, 0xc2b6f443867adb31, 0xc1c93a376062db09, 0xd3e20fe490359eb1, 0xf2ea7514b1297b7b, 0x6f15e5f529c1f8b, 0xa39fc286a3d8435, 0xf574dcac2bce2fc7,
     0x220cbebc84e3d12e, 0x3453eaa193e837f1, 0xd8b71333935203be, 0xa9d72c82ed03d675, 0x9d721cad685e353f, 0x488e857e335c3c7d, 0xf948e1a05d71e4dd, 0xef1fdfb3e81566d2,
@@ -68,7 +68,8 @@ alignas(32) constexpr uint64_t C[ITERS * 8] = {
     0x48bc924af11bd720, 0xfaf417d5d9b21b99, 0xe71da4aa88e12852, 0x5d80ef9d1891cc86, 0xf82012d430219f9b, 0xcda43c32bcdf1d77, 0xd21380b00449b17a, 0x378ee767f11631ba
 }; ///< C round constants
 
-alignas(32) constexpr uint64_t IV[2 * 8] = {
+alignas(32)
+constexpr uint64_t IV[2 * 8] = {
     0x000000000000000, 0x000000000000000, 0x000000000000000, 0x000000000000000, 0x000000000000000, 0x000000000000000, 0x000000000000000, 0x000000000000000,
     0x101010101010101, 0x101010101010101, 0x101010101010101, 0x101010101010101, 0x101010101010101, 0x101010101010101, 0x101010101010101, 0x101010101010101
 }; ///< Initialization vectors
