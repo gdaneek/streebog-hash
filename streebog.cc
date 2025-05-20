@@ -18,15 +18,23 @@
 
 template<typename T>    // compile-time mmul prcalc
 consteval T mmul_A_precalc(T out = T{}) {
-        for(int i = 0;i < 8;i++)
-        for(int j = 0;j < 256;j++)
-        for(int t = 0;t < 8;t++)
-        out.v[i][j] ^= ((!(j&(1<<t))-1)&m_A[63-t-(i<< 3)]);
+    // precalc mmul
+    for(int i = 0;i < 8;i++)
+    for(int j = 0;j < 256;j++)
+    for(int t = 0;t < 8;t++)
+    out.v[i][j] ^= ((!(j&(1<<t))-1)&m_A[63-t-(i<< 3)]);
 
-        return out;
+    // make pi
+    T permutted{};
+
+    for(int i = 0;i < 8;i++)
+    for(int j = 0;j < 256;j++)
+    permutted.v[i][j] = out.v[i][pi[j]];
+
+    return permutted;
 }
 
-constexpr struct {uint64_t v[8][256];} mmul_A_LUT = mmul_A_precalc<std::remove_cv_t<decltype(mmul_A_LUT)>>();
+constexpr struct alignas(32) {  alignas(32) uint64_t v[8][256];} mmul_A_LUT = mmul_A_precalc<std::remove_cv_t<decltype(mmul_A_LUT)>>();
 
 
 inline constexpr auto get_IV(const Streebog::Mode mode, uint64_t * const out) {
@@ -50,28 +58,46 @@ void Streebog::reset() {
     memset(sum, 0, sizeof(sum));
 }
 
-void Streebog::LPS(uint64_t* in) {
-    uint64_t bb[8]{}, w;
-    for(int i = 0;i < 8;i++) {
-        w = in[i];
-        const uint64_t* p = mmul_A_LUT.v[i];
-        for(int j = 0;j < 8;j++) {
-            bb[j] ^= p[pi [ ((unsigned char*)&w)[j]] ];
-        }
-    }
+#include <immintrin.h>
 
-    memcpy(in, bb, 64);
+void Streebog::LPS(uint64_t* in) {
+
+    __m256i bl{}, bh{};
+     for(int i = 0;i < 8;i++) {
+        uint64_t w = in[i];
+
+        const uint64_t* p = mmul_A_LUT.v[i];
+
+        uint8_t b0 =  w        & 0xFF;
+        uint8_t b1 = (w >> 8)  & 0xFF;
+        uint8_t b2 = (w >> 16) & 0xFF;
+        uint8_t b3 = (w >> 24) & 0xFF;
+        uint8_t b4 = (w >> 32) & 0xFF;
+        uint8_t b5 = (w >> 40) & 0xFF;
+        uint8_t b6 = (w >> 48) & 0xFF;
+        uint8_t b7 = (w >> 56) & 0xFF;
+
+        __m256i pi_vl = _mm256_set_epi64x(p[b3], p[b2], p[b1], p[b0]);
+        __m256i pi_vh = _mm256_set_epi64x(p[b7], p[b6], p[b5], p[b4]);
+
+        bl = _mm256_xor_si256(bl, pi_vl);
+        bh = _mm256_xor_si256(bh, pi_vh);
+
+     }
+
+   _mm256_store_si256((__m256i*)(in + 0), bl);
+   _mm256_store_si256((__m256i*)(in + 4), bh);
 }
 
 
 void Streebog::X(uint64_t const * const l, uint64_t const * const r,uint64_t * const o) {
-    for(auto i = 0;i < 8;i++)
-        o[i] = l[i] ^ r[i];
+    [&]<uint64_t... I>(std::index_sequence<I...>) {
+        ((o[I] = l[I] ^ r[I]), ...);
+    } (std::make_index_sequence<8>());
 }
 
-
 void Streebog::G(uint64_t const * const m, bool is_zero) {
-    uint64_t K[8], tmp[8];
+    alignas(32) uint64_t K[8], tmp[8];
 
     is_zero? (void)memcpy(K, h, 64) : X(h, n, K);
     LPS(K);
@@ -80,12 +106,13 @@ void Streebog::G(uint64_t const * const m, bool is_zero) {
     X(K, C, K);
     LPS(K);
 
-    for(auto i = 1;i < 12;++i) {
-        X(K, tmp, tmp);
-        LPS(tmp);
-        X(K, C+(i << 3), K);
-        LPS(K);
-    }
+    [&]<uint64_t... I>(std::index_sequence<I...>) {
+        ((X(K, tmp, tmp),
+        LPS(tmp),
+        X(K, C+((I+1) << 3), K),
+        LPS(K)), ...);
+    } (std::make_index_sequence<11>());
+
 
     X(K, tmp, tmp);  // last iteration X only
     X(tmp, h, tmp);
@@ -109,7 +136,7 @@ uint64_t const * const Streebog::finalize(void* m, const uint64_t size) {
     auto blocks_n = size >> 6;
     uint64_t _d = blocks_n << 6;
 
-    uint64_t buff[8]{};
+    alignas(32) uint64_t buff[8]{};
 
     this->update((void*)mb, _d);
 

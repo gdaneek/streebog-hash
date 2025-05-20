@@ -8,7 +8,7 @@
 #include <string.h>
 #include <cinttypes>
 
-#define CHUNK_SIZE 1048576
+#define CHUNK_SIZE 32768
 
 int main(int argc, char** argv) {
     if (argc != 2) {

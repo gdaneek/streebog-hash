@@ -23,9 +23,9 @@
  * @warning by default, the resulting hash is written in little endian (i.e., back to how it is presented in the control examples)
  */
 class Streebog {
-    uint64_t n[8]; ///< N variable (number of bits)
-    uint64_t sum[8]; ///< Σ variable (sum of all data blocks)
-    uint64_t h[8]; ///< h variable (output hash)
+    alignas(32) uint64_t n[8]; ///< N variable (number of bits)
+    alignas(32) uint64_t sum[8]; ///< Σ variable (sum of all data blocks)
+    alignas(32) uint64_t h[8]; ///< h variable (output hash)
 
     void i512_sum(const uint64_t * const l, uint64_t const * const r, uint64_t * const o);
 
