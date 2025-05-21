@@ -3,7 +3,7 @@
  * @brief   Constants for GOST 34.11-2018 hash functions 256 and 512 bits
  * @author  https://github.com/gdaneek
  * @date    30.05.2025
- * @version 2.1
+ * @version 2.2-beta
  * @see https://github.com/gdaneek/GOST-34.11-2018
  */
 

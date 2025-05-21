@@ -31,10 +31,11 @@ foreach(target IN LISTS TARGETS streebog)
     target_compile_options(${target} PRIVATE
         -std=c++20
         -O3
-        -march=native
+        #-march=native
         -flto
         -fno-exceptions
         -fno-rtti
+        -DDISABLE_MANUAL_VECTORIZATION #use to get non AVX impl
     )
 endforeach()
 

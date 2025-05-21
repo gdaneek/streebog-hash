@@ -3,7 +3,7 @@
  * @brief   GOST 34.11-2018 hash functions 256 and 512 bits
  * @author  https://github.com/gdaneek
  * @date    30.05.2025
- * @version 2.1
+ * @version 2.2-beta
  * @see https://github.com/gdaneek/GOST-34.11-2018
  */
 
@@ -11,9 +11,8 @@
 #include <stdint.h>
 
 #if defined(__AVX2__)
-
 #include <immintrin.h>
-
+#include <xmmintrin.h>
 #endif
 
 /**
@@ -29,16 +28,17 @@
  */
 class Streebog {
 
-    // TODO: vec regs for AVX
-
+    #if defined(__AVX2__) && !defined(DISABLE_MANUAL_VECTORIZATION)
+    __m256i n[2];
+    __m256i sum[2];
+    __m256i h[2];
+    void G(__m256i* m, bool is_zero = false);
+    #else
     alignas(32) uint64_t n[8];   ///< N variable (number of bits)
     alignas(32) uint64_t sum[8]; ///< Σ variable (sum of all data blocks)
     alignas(32) uint64_t h[8];   ///< h variable (output hash)
-
-    void i512_sum(const uint64_t * const l, uint64_t const * const r, uint64_t * const o);
-    void LPS(uint64_t * const in);
-    void X(uint64_t const * const l, uint64_t const * const r, uint64_t * const o);
-    void G(uint64_t const * const m, bool is_zero = false);
+    void G(uint64_t const * const m, bool is_zero = false); ///< implementation of G transformation
+    #endif
 
 public:
 
@@ -59,7 +59,7 @@ public:
      * @note h variable takes the IV (init vector) value corresponding to the operating mode
      */
     void reset();
-    explicit Streebog(const Mode _mode) : mode{_mode} { this->reset(); }
+    explicit Streebog(const Mode _mode);
 
 
     /**
