@@ -3,12 +3,17 @@
  * @brief   GOST 34.11-2018 hash functions 256 and 512 bits
  * @author  https://github.com/gdaneek
  * @date    30.05.2025
- * @version 2.2.1
+ * @version 2.2
  * @see https://github.com/gdaneek/GOST-34.11-2018
  */
 
 #pragma once
 #include <stdint.h>
+
+#if defined(__AVX2__)
+#include <immintrin.h>
+#include <xmmintrin.h>
+#endif
 
 /**
  * @brief GOST 34.11-2018 (34.11-2012 - `Streebog`) implementation with block-by-block hash calculation support
@@ -21,10 +26,17 @@
  */
 class Streebog {
 
+    #if defined(__AVX2__) && !defined(DISABLE_MANUAL_AVX)
+    __m256i n[2];
+    __m256i sum[2];
+    __m256i h[2];
+    void G(__m256i* m, bool is_zero = false);
+    #else
     alignas(32) uint64_t n[8];   ///< N variable (number of bits)
     alignas(32) uint64_t sum[8]; ///< Σ variable (sum of all data blocks)
     alignas(32) uint64_t h[8];   ///< h variable (output hash)
     void G(uint64_t const * const m, bool is_zero = false); ///< implementation of G transformation
+    #endif
 
 public:
 
