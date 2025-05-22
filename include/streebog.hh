@@ -3,17 +3,12 @@
  * @brief   GOST 34.11-2018 hash functions 256 and 512 bits
  * @author  https://github.com/gdaneek
  * @date    30.05.2025
- * @version 2.2-beta
+ * @version 2.2.1
  * @see https://github.com/gdaneek/GOST-34.11-2018
  */
 
 #pragma once
 #include <stdint.h>
-
-#if defined(__AVX2__)
-#include <immintrin.h>
-#include <xmmintrin.h>
-#endif
 
 /**
  * @brief GOST 34.11-2018 (34.11-2012 - `Streebog`) implementation with block-by-block hash calculation support
@@ -21,24 +16,15 @@
  * The standard does not explicitly declare endianness,
  * so this implementation follows the little-endian approach as the most optimal in terms of programming and performance.
  * Instantiate an object and calculate big data hashes using a combination of update (updates the state of h, n, sum)
- * and finalize (implements final processing). For simple cases (when all the data has already been placed in the buffer),
- * it is rational to use the class as a functor called immediately after creation, or the more convenient functional wrapper streebog below.
- *
+ * and finalize (implements final processing)
  * @warning by default, the resulting hash is written in little endian (i.e., back to how it is presented in the control examples)
  */
 class Streebog {
 
-    #if defined(__AVX2__) && !defined(DISABLE_MANUAL_VECTORIZATION)
-    __m256i n[2];
-    __m256i sum[2];
-    __m256i h[2];
-    void G(__m256i* m, bool is_zero = false);
-    #else
     alignas(32) uint64_t n[8];   ///< N variable (number of bits)
     alignas(32) uint64_t sum[8]; ///< Σ variable (sum of all data blocks)
     alignas(32) uint64_t h[8];   ///< h variable (output hash)
     void G(uint64_t const * const m, bool is_zero = false); ///< implementation of G transformation
-    #endif
 
 public:
 
@@ -96,16 +82,13 @@ inline uint64_t const * const streebog256(void* in, const uint64_t in_sz, void* 
     return Streebog{Streebog::Mode::H256}(in, in_sz, out);
 }
 
-
 inline uint64_t const * const streebog512(void* in, const uint64_t in_sz, void* out = nullptr) {
     return Streebog{Streebog::Mode::H512}(in, in_sz, out);
 }
 
-
 inline auto streebog(void* in, const uint64_t in_sz, void* out = nullptr, const Streebog::Mode mode = Streebog::Mode::H256) {
     return (mode == Streebog::Mode::H256? streebog256(in, in_sz, out) : streebog512(in, in_sz, out));
 }
-
 
 #ifdef STREEBOG_ENABLE_WRAPPERS
 
@@ -117,7 +100,6 @@ inline auto streebog512(void* in, const uint64_t in_sz) {
 
     return out;
 }
-
 
 inline auto streebog256(void* in, const uint64_t in_sz) {
     std::array<uint64_t, 4> out;
