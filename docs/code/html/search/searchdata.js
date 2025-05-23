@@ -3,7 +3,7 @@ var indexSectionsWithContent =
   0: "cfimoprsu",
   1: "s",
   2: "cs",
-  3: "forsu",
+  3: "foru",
   4: "cimp",
   5: "m"
 };

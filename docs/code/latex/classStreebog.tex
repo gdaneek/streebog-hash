@@ -35,16 +35,14 @@ uint64\+\_\+t const  $\ast$const \mbox{\hyperlink{classStreebog_a42a28a6beeefc8a
 \begin{DoxyCompactItemize}
 \item 
 \mbox{\Hypertarget{classStreebog_a7f7f13fb24432283a525892c56bc8835}\label{classStreebog_a7f7f13fb24432283a525892c56bc8835}} 
-const \mbox{\hyperlink{classStreebog_a8d291745db233e546d07937c4183397b}{Mode}} {\bfseries mode}
-\end{DoxyCompactItemize}
+const \mbox{\hyperlink{classStreebog_a8d291745db233e546d07937c4183397b}{Mode}} \mbox{\hyperlink{classStreebog_a7f7f13fb24432283a525892c56bc8835}{mode}}
+\begin{DoxyCompactList}\small\item\em current algo mode (512-\/bit $\vert$ 256-\/bit) \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
 \doxysubsection{Detailed Description}
 GOST 34.\+11-\/2018 (34.\+11-\/2012 -\/ {\ttfamily \mbox{\hyperlink{classStreebog}{Streebog}}}) implementation with block-\/by-\/block hash calculation support. 
 
-The standard does not explicitly declare endianness, so this implementation follows the little-\/endian approach as the most optimal in terms of programming and performance. Instantiate an object and calculate big data hashes using a combination of update (updates the state of h, n, sum) and finalize (implements final processing). For simple cases (when all the data has already been placed in the buffer), it is rational to use the class as a functor called immediately after creation, or the more convenient functional wrapper streebog below.
-
-\begin{DoxyWarning}{Warning}
+The standard does not explicitly declare endianness, so this implementation follows the little-\/endian approach as the most optimal in terms of programming and performance. Instantiate an object and calculate big data hashes using a combination of update (updates the state of h, n, sum) and finalize (implements final processing) \begin{DoxyWarning}{Warning}
 by default, the resulting hash is written in little endian (i.\+e., back to how it is presented in the control examples) 
 \end{DoxyWarning}
 

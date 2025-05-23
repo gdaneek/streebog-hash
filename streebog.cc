@@ -4,7 +4,7 @@
  * @author  https://github.com/gdaneek
  * @date    30.05.2025
  * @version 2.3
- * @see https://github.com/gdaneek/GOST-34.11-2018
+ * @see https://github.com/gdaneek/streebog-hash
  */
 
 #include "constants.hh"

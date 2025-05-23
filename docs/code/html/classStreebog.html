@@ -106,13 +106,13 @@ Public Member Functions</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a7f7f13fb24432283a525892c56bc8835"><td class="memItemLeft" align="right" valign="top"><a id="a7f7f13fb24432283a525892c56bc8835"></a>
-const <a class="el" href="classStreebog.html#a8d291745db233e546d07937c4183397b">Mode</a>&#160;</td><td class="memItemRight" valign="bottom"><b>mode</b></td></tr>
+const <a class="el" href="classStreebog.html#a8d291745db233e546d07937c4183397b">Mode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classStreebog.html#a7f7f13fb24432283a525892c56bc8835">mode</a></td></tr>
+<tr class="memdesc:a7f7f13fb24432283a525892c56bc8835"><td class="mdescLeft">&#160;</td><td class="mdescRight">current algo mode (512-bit | 256-bit) <br /></td></tr>
 <tr class="separator:a7f7f13fb24432283a525892c56bc8835"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>GOST 34.11-2018 (34.11-2012 - <code><a class="el" href="classStreebog.html" title="GOST 34.11-2018 (34.11-2012 - Streebog) implementation with block-by-block hash calculation support.">Streebog</a></code>) implementation with block-by-block hash calculation support. </p>
-<p>The standard does not explicitly declare endianness, so this implementation follows the little-endian approach as the most optimal in terms of programming and performance. Instantiate an object and calculate big data hashes using a combination of update (updates the state of h, n, sum) and finalize (implements final processing). For simple cases (when all the data has already been placed in the buffer), it is rational to use the class as a functor called immediately after creation, or the more convenient functional wrapper streebog below.</p>
-<dl class="section warning"><dt>Warning</dt><dd>by default, the resulting hash is written in little endian (i.e., back to how it is presented in the control examples) </dd></dl>
+<p>The standard does not explicitly declare endianness, so this implementation follows the little-endian approach as the most optimal in terms of programming and performance. Instantiate an object and calculate big data hashes using a combination of update (updates the state of h, n, sum) and finalize (implements final processing) </p><dl class="section warning"><dt>Warning</dt><dd>by default, the resulting hash is written in little endian (i.e., back to how it is presented in the control examples) </dd></dl>
 </div><h2 class="groupheader">Member Enumeration Documentation</h2>
 <a id="a8d291745db233e546d07937c4183397b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8d291745db233e546d07937c4183397b">&#9670;&nbsp;</a></span>Mode</h2>

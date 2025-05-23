@@ -4,7 +4,7 @@
  * @author  https://github.com/gdaneek
  * @date    30.05.2025
  * @version 2.3
- * @see https://github.com/gdaneek/GOST-34.11-2018
+ * @see https://github.com/gdaneek/streebog-hash
  */
 
 #pragma once
@@ -89,33 +89,20 @@ public:
 
 };
 
-
-inline uint64_t const * const streebog256(void* in, const uint64_t in_sz, void* out = nullptr) {
-    return Streebog{Streebog::Mode::H256}(in, in_sz, out);
-}
-
-inline uint64_t const * const streebog512(void* in, const uint64_t in_sz, void* out = nullptr) {
-    return Streebog{Streebog::Mode::H512}(in, in_sz, out);
-}
-
-inline auto streebog(void* in, const uint64_t in_sz, void* out = nullptr, const Streebog::Mode mode = Streebog::Mode::H256) {
-    return (mode == Streebog::Mode::H256? streebog256(in, in_sz, out) : streebog512(in, in_sz, out));
-}
-
 #ifdef STREEBOG_ENABLE_WRAPPERS
 
 #include <array>
 
 inline auto streebog512(void* in, const uint64_t in_sz) {
     std::array<uint64_t, 8> out;
-    streebog512(in, in_sz, out.data());
+    Streebog{Streebog::Mode::H512}(in, in_sz, out.data());
 
     return out;
 }
 
 inline auto streebog256(void* in, const uint64_t in_sz) {
     std::array<uint64_t, 4> out;
-    streebog256(in, in_sz, out.data());
+    Streebog{Streebog::Mode::H256}(in, in_sz, out.data());
 
     return out;
 }
