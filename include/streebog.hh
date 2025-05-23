@@ -3,14 +3,14 @@
  * @brief   GOST 34.11-2018 hash functions 256 and 512 bits
  * @author  https://github.com/gdaneek
  * @date    30.05.2025
- * @version 2.2
+ * @version 2.3
  * @see https://github.com/gdaneek/GOST-34.11-2018
  */
 
 #pragma once
 #include <stdint.h>
 
-#if defined(__AVX2__)
+#if defined(USE_MANUAL_AVX)
 #include <immintrin.h>
 #include <xmmintrin.h>
 #endif
@@ -26,7 +26,7 @@
  */
 class Streebog {
 
-    #if defined(__AVX2__) && !defined(DISABLE_MANUAL_AVX)
+    #if defined(USE_MANUAL_AVX)
     __m256i n[2];
     __m256i sum[2];
     __m256i h[2];

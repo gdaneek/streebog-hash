@@ -6,16 +6,16 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 
-add_executable(stbg streebog.cc examples/example.cc)
+add_executable(stbg streebog.cc examples/canonical.cc)
 target_include_directories(stbg PUBLIC include/)
 
 
-add_executable(stbg512 streebog.cc examples/example.cc)
+add_executable(stbg512 streebog.cc examples/canonical.cc)
 target_include_directories(stbg512 PUBLIC include/)
 target_compile_options(stbg512 PRIVATE)
 
 
-add_executable(stbg256 streebog.cc examples/example.cc)
+add_executable(stbg256 streebog.cc examples/canonical.cc)
 target_include_directories(stbg256 PUBLIC include/)
 target_compile_options(stbg256 PRIVATE)
 
@@ -30,12 +30,13 @@ set(TARGETS stbg stbg512 stbg256)
 foreach(target IN LISTS TARGETS streebog)
     target_compile_options(${target} PRIVATE
         -std=c++20
-        -O3
+        -O3 -Ofast
         -march=native
         -flto
         -fno-exceptions
         -fno-rtti
         -DDISABLE_MANUAL_AVX # remove this for get full-avx implementation
+        -nostdlib
     )
 endforeach()
 
