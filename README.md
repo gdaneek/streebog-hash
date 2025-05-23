@@ -1,10 +1,10 @@
-# Streebog hash
+# Хеш функция Стрибог 256/512 бит
 
-High-performance implementation of GOST 34.11-2012 standards (also GOST 34.11-2018).
+Высокопроизводительная реализация стандарта ГОСТ 34.11-2012 (ГОСТ 34.11-2018)
 
-### Installation
+### Установка
 
-Clone the repository and use cmake to build the project:
+Клонируйте репозиторий и используйте CMake для сборки:
 
 ```
 git clone https://github.com/gdaneek/streebog-hash.git
@@ -15,28 +15,27 @@ cmake ..
 cmake --build .
 ```
 
-After the build, you will receive
-- executable *stbg512* containing only a 512-bit hash, 
-- executable *stbg256* containing only a 256-bit hash, 
-- executable *stbg* with both modes of operation
-- static library streeboglib.a, which you can connect to your project. 
-- Tests based on control examples are compiled into the *tests* executable file.
+После сборки вы получаете:
+- исполняемый файл *stbg512*, вычисляющий только 512-бит хеш; 
+- исполняемый файл *stbg256* вычисляющий только 256-бит хеш; 
+- исполняемый файл *stbg*, вычисляющий хеш в любом режиме;
+- Статическую библиотеку streeboglib.a;
+- Тесты, основанные на контрольных примерах стандарта
 
-### Developer documentation
+### Документрация разработчика
 
-See `docs/code` subfolder or generate it yourself using Doxygen:
+Смотреть `docs/code` подпапку или генерировать самостоятельно с использованием Doxygen:
 ```
 cd docs
 doxygen
 ```
 
-### Benchmarks
+### Бенчмарки
 
-See [benchmarks](docs/benchmarks.md)
+Смотреть [benchmarks](docs/benchmarks.md)
 
-### Advanced settings
+### Продвинутые настройки
 
-The header file contains some wrappers for the class that simplify working with the hash as an STL container. Use the `STREEBOG_ENABLE_WRAPPERS` macro to allow them.
+Заголовочный файл содержит некоторые обертки, упрощающие работу с хешем как с STL контейнером. Используйте `STREEBOG_ENABLE_WRAPPERS` директиву чтобы разрешить их.
 
-Also use the macro `USE_MANUAL_AVX` to get a fully AVX/AVX2 vectorized version of the programs (experimental  in the implementations of versions v2.2+)
-
+Также используйте директиву `USE_MANUAL_AVX`, чтобы получить полностью AVX/AVX2 -векторизованную имплементацию (для версий v2.2+)
