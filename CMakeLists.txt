@@ -42,9 +42,9 @@ endforeach()
 
 enable_testing()
 
-add_executable(tests streebog.cc tests/streebog_test.cc )
-target_include_directories(tests PUBLIC include/)
-add_test(NAME streebog_tests COMMAND tests)
-target_compile_options(tests PRIVATE)
+add_executable(streebog_test streebog.cc tests/streebog_test.cc )
+target_include_directories(streebog_test PUBLIC include/)
+add_test(NAME streebog_tests COMMAND streebog_test)
+target_compile_options(streebog_test PRIVATE)
 
 
