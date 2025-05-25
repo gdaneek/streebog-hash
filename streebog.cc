@@ -36,8 +36,9 @@ Streebog::Streebog(const Mode _mode) : mode{_mode} {
     this->reset();
 }
 
-inline void vadd512(void* _a, void* _b, void* __restrict _dst) {   // idk how convert it to AVX2. fully vectorized assembler is generated anyway.
-    ui64 *a = (ui64*)_a, *b = (ui64* __restrict)_b, *dst = (ui64*)_dst;
+inline void vadd512(const void* _a, const void* _b, void* __restrict _dst) {   // idk how convert it to AVX2. fully vectorized assembler is generated anyway.
+    const ui64 *a = (const ui64*)_a, *b = (const ui64*)_b;
+    ui64* dst = (ui64*)_dst;
     bool carry{};
     [&]<ui64... Is>(is<Is...>) __attribute__((always_inline)) {
         (([&](const ui64 I) __attribute__((always_inline)) {
@@ -94,16 +95,17 @@ void Streebog::G(ui64 const * __restrict m, bool is_zero) {
 
 #endif
 
-void Streebog::update(void * __restrict m, const ui64 size) {
+void Streebog::update(const void* __restrict m, const ui64 size) {
     for(ui64 i{};i < (size >> 6);i++, *(uint64_t*)n += 0x200)
         #if defined(USE_MANUAL_AVX)
         G((__m256i*)m + (i << 1)), vadd512(sum, (__m256i*)m + (i << 1), sum);
         #else
-        G((ui64 *)m + (i << 3)), vadd512(sum, (ui64*)m + (i << 3), sum);
+        G((const ui64*)m + (i << 3)), vadd512(sum, (const ui64*)m + (i << 3), sum);
         #endif
 }
 
-ui64 const * const Streebog::finalize(void * __restrict m, const ui64 size) {
+
+ui64 const * const Streebog::finalize(const void* __restrict m, const ui64 size) {
     #if defined(USE_MANUAL_AVX)
     __m256i buff[2]{};
     #else
@@ -112,15 +114,16 @@ ui64 const * const Streebog::finalize(void * __restrict m, const ui64 size) {
     const ui64 _d = size & ~0x3FULL;
     auto rem = size - _d;
     this->update(m, _d);                                            // process whole chunks
-    memcpy((void*)buff, (char*)m+_d, rem);                          // pad input
+    memcpy((void*)buff, (const char*)m+_d, rem);                    // pad input
     ((uint8_t*)buff)[rem] = 0x01;
-    G(buff), *(ui64*)n += (rem << 3), vadd512(sum, buff, sum);     // last step
+    G(buff), *(ui64*)n += (rem << 3), vadd512(sum, buff, sum);      // last step
     G(n, true), G(sum, true);
 
     return (ui64 const * const)(this->h);
 }
 
-ui64 const * const Streebog::operator()(void* m, const ui64 size, void* out) {
+
+ui64 const * const Streebog::operator()(const void* m, const ui64 size, void* out) {
     auto ret = this->finalize(m, size);
     if(out != nullptr)
         memcpy(out, ret + (mode == Mode::H512? 0 : 4), (mode == Mode::H512? 8 : 4) << 3);

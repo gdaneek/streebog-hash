@@ -67,7 +67,7 @@ public:
      * @warning do not use this method if you can immediately provide all the data that you need to calculate the hash from.
      * Instead, use operator() or finalize().
      */
-    void update(void* m, const uint64_t size);
+    void update(const void* m, const uint64_t size);
 
 
     /**
@@ -76,7 +76,7 @@ public:
      * @param size data size in bytes
      * @note use operator() for a more convenient call if you can provide all the data at once
      */
-    uint64_t const * const finalize(void* m, const uint64_t size);
+    uint64_t const * const finalize(const void* m, const uint64_t size);
 
     /**
      * @brief alias for finalize() method
@@ -85,7 +85,7 @@ public:
      * @param out array for writing output; it may not be provided,
      * and then the function will work exactly the same as finalize()
      */
-    uint64_t const * const operator()(void* m, const uint64_t size, void* out = nullptr);
+    uint64_t const * const operator()(const void* m, const uint64_t size, void* out = nullptr);
 
 };
 
@@ -93,18 +93,19 @@ public:
 
 #include <array>
 
-inline auto streebog512(void* in, const uint64_t in_sz) {
+inline auto streebog512{[](const void* in, const uint64_t in_sz) {
     std::array<uint64_t, 8> out;
     Streebog{Streebog::Mode::H512}(in, in_sz, out.data());
 
     return out;
-}
+}};
 
-inline auto streebog256(void* in, const uint64_t in_sz) {
+
+inline auto streebog256{[](const void* in, const uint64_t in_sz) {
     std::array<uint64_t, 4> out;
     Streebog{Streebog::Mode::H256}(in, in_sz, out.data());
 
     return out;
-}
+}};
 
 #endif
