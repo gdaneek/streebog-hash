@@ -1,0 +1,7 @@
+Language: Cpp
+BasedOnStyle: Google
+IndentWidth: 4            # x2 default value
+NamespaceIndentation: All # enable namespace offsets
+ColumnLimit: 120          # x1.5 default value
+
+
