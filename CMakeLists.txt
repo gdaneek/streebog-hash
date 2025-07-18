@@ -35,7 +35,6 @@ foreach(target IN LISTS TARGETS streebog)
         -flto
         -fno-exceptions
         -fno-rtti
-        -DDISABLE_MANUAL_AVX # remove this for get full-avx implementation
         -nostdlib
     )
 endforeach()
