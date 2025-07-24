@@ -1,10 +1,10 @@
-# Хеш-функция Стрибог (ГОСТ 34.11-2012 / ГОСТ 34.11-2018)
+# Хеш-функция Стрибог (ГОСТ 34.11-2012)
 
-[![ГОСТ 34.11-2012](https://img.shields.io/badge/ГОСТ-34.11--2012-blue?style=flat-square)](https://meganorm.ru/Data2/1/4293788/4293788459.pdf)
-![C++20](https://img.shields.io/badge/C++%20Code%20standard-C++20-blue?style=flat-square)
-![Google Code Style](https://img.shields.io/badge/Code%20style-Google-informational?style=flat-square)
-[![Benchmark](https://img.shields.io/badge/benchmarks-hashing%20races-brightgreen?style=flat-square)](doc/benchmarks.md)
-[![GitHub license](https://img.shields.io/github/license/gdaneek/streebog-hash?style=flat-square)](https://github.com/gdaneek/streebog-hash/blob/master/LICENSE)
+[![ГОСТ 34.11-2012](https://img.shields.io/badge/ГОСТ-34.11--2012-blue?style=plastic)](https://meganorm.ru/Data2/1/4293788/4293788459.pdf)
+![C++20](https://img.shields.io/badge/Code%20std-C++20-purple?style=plastic)
+![Google Code Style](https://img.shields.io/badge/Code%20style-Google-purple?style=plastic)
+[![Benchmark](https://img.shields.io/badge/benchmarks-races-brightgreen?style=plastic)](doc/benchmarks.md)
+[![GitHub license](https://img.shields.io/github/license/gdaneek/streebog-hash?style=plastic)](https://github.com/gdaneek/streebog-hash/blob/master/LICENSE)
 
 Высокопроизводительная реализация хеш-функции **Стрибог** согласно российским криптографическим стандартам ГОСТ 34.11-2012 (ГОСТ 34.11-2018).
 
