@@ -40,6 +40,7 @@ cmake --build .
 ```bash
 cd doc
 doxygen
+
 ```
 
 ## 📊 Бенчмарки
