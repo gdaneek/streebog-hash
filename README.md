@@ -1,9 +1,9 @@
 # Хеш-функция Стрибог (ГОСТ 34.11-2012)
 
 [![ГОСТ 34.11-2012](https://img.shields.io/badge/ГОСТ-34.11--2012-blue?style=plastic)](https://meganorm.ru/Data2/1/4293788/4293788459.pdf)
-![C++20](https://img.shields.io/badge/Code%20std-C++20-purple?style=plastic)
-![Google Code Style](https://img.shields.io/badge/Code%20style-Google-purple?style=plastic)
-[![Benchmark](https://img.shields.io/badge/benchmarks-races-brightgreen?style=plastic)](doc/benchmarks.md)
+![C++20](https://img.shields.io/badge/std-C++20-purple?style=plastic)
+![Google Code Style](https://img.shields.io/badge/style-Google-purple?style=plastic)
+[![Benchmark](https://img.shields.io/badge/benchmark-hashing%20race-brightgreen?style=plastic)](doc/benchmarks.md)
 [![GitHub license](https://img.shields.io/github/license/gdaneek/streebog-hash?style=plastic)](https://github.com/gdaneek/streebog-hash/blob/master/LICENSE)
 
 Высокопроизводительная реализация хеш-функции **Стрибог** согласно российским криптографическим стандартам ГОСТ 34.11-2012 (ГОСТ 34.11-2018).
